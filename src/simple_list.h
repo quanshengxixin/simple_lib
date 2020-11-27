@@ -1,7 +1,7 @@
-#ifndef _LINUX_LIST_H
-#define _LINUX_LIST_H
+#ifndef __SIMPLE_LIST_H__
+#define __SIMPLE_LIST_H__
 
-#include "kernel.h"
+#include "simple_kernel.h"
 
 /*
  * Simple doubly linked list implementation.
@@ -580,4 +580,4 @@ static inline void list_splice_tail_init(struct list_head *list,
 	n = list_next_entry(pos, member)
 
 
-#endif
+#endif // __SIMPLE_LIST_H__

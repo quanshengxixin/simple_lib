@@ -1,8 +1,10 @@
-#include "memory.h"
-#include "log.h"
+#include <stdlib.h>
 #include <pthread.h>
 
-#include "list.h"
+#include "simple_log.h"
+#include "simple_list.h"
+
+#include "simple_memory.h"
 
 struct free_area {
     struct list_head list;
@@ -15,8 +17,8 @@ struct free_area {
 // #define MEM_SIZE_SHIFT  16
 
 static unsigned int page_size = (1 << PAGE_SHIFT); // 1k in bytes
-static void *total_addr = 0xA0268000;
-static unsigned int total_size = 0xF0000; // 1M in bytes
+static void *total_addr = (void *)0xA0268000;
+static unsigned int total_size = 0xF0000; // in bytes
 
 struct free_area free_areas[MAS_ORDER] = {0};
 struct free_area work_areas = {0};
@@ -35,7 +37,7 @@ static inline int get_order(unsigned int size)
     return order;
 }
 
-void memory_init()
+int simple_memory_init(void *buffer_base, unsigned int buffer_size)
 {
     int order = 0;
     struct free_area *pos;
@@ -45,10 +47,14 @@ void memory_init()
 
     INIT_LIST_HEAD(&work_areas.list);
 
-    printf_dbg("page_size = 0x%x, memory_size = 0x%x, memory_addr = 0x%x", page_size, total_size, total_addr);
+	total_addr = buffer_base;
+	total_size = buffer_size;
+
+    simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "page_size = 0x%X, memory_size = 0x%X, memory_addr = 0x%X",
+	               page_size, total_size, total_addr);
 
     order = get_order(total_size);
-    printf_dbg("total order = %d, 0x%x", order, page_size * (1 << order));
+    simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "total order = %d, 0x%x", order, page_size * (1 << order));
     struct free_area *area = (struct free_area *)malloc(sizeof(struct free_area));
     area->addr = total_addr;
     area->order = order;
@@ -57,13 +63,15 @@ void memory_init()
     for (order = 0; order < MAS_ORDER; order++) {
         if (!list_empty(&free_areas[order].list))
             list_for_each_entry(pos, &free_areas[order].list, list)
-                printf_dbg("order = %d, addr = 0x%x, size = %u\n", pos->order, pos->addr, page_size * (1 << order));
+                simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "order = %d, addr = 0x%x, size = %u",
+				               pos->order, pos->addr, page_size * (1 << order));
     }
 
     pthread_mutex_init(&memory_mutex, NULL);
+	return 0;
 }
 
-void memory_uninit()
+void simple_memory_uninit()
 {
     struct free_area *pos;
     struct free_area *tmp;
@@ -72,14 +80,14 @@ void memory_uninit()
     for (i = 0; i < MAS_ORDER; i++) {
         list_for_each_entry_safe(pos, tmp, &free_areas[i].list, list)
         {
-            printf_dbg("i = %d, addr =  %x\n", i, pos->addr);
+            simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "i = %d, addr =  %x\n", i, pos->addr);
             list_del(&(pos->list));
             free(pos);
         }
     }
 
     list_for_each_entry_safe(pos, tmp, &work_areas.list, list) {
-        printf_dbg("work order = %d, addr =  %x\n", pos->order, pos->addr);
+        simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "work order = %d, addr =  %x\n", pos->order, pos->addr);
         list_del(&(pos->list));
         free(pos);
     }
@@ -109,9 +117,8 @@ static inline void * expand(int order, int current_order, struct free_area *area
     return expand(order, current_order, area);
 }
 
-void *memory_malloc(unsigned int buffer_size)
+void *simple_memory_malloc(unsigned int buffer_size)
 {
-    int i;
     int current_order;
     struct free_area *area;
     struct free_area *pos;
@@ -123,8 +130,8 @@ void *memory_malloc(unsigned int buffer_size)
         if (list_empty(&area->list))
             continue;
         pos = list_first_entry(&area->list, struct free_area, list);
-        printf_dbg("order = %d, current order = %d\n", order, current_order);
-        printf_dbg("addr = 0x%x, current order = %d\n", pos->addr, pos->order);
+        simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "order = %d, current order = %d\n", order, current_order);
+        simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "addr = 0x%x, current order = %d\n", pos->addr, pos->order);
         list_del(&pos->list);
         return_addr = expand(order, current_order, pos);
         pthread_mutex_unlock(&memory_mutex);
@@ -170,15 +177,14 @@ static inline void reduce(int order)
     return;
 }
 
-void memory_free(void *buffer_addr)
+void simple_memory_free(void *buffer_addr)
 {
     struct free_area *pos;
-    struct free_area *area;
-    int order;
+
     pthread_mutex_lock(&memory_mutex);
     list_for_each_entry(pos, &work_areas.list, list) {
         if (pos->addr == buffer_addr) {
-            printf_dbg("order = %d, addr = 0x%x", pos->order, pos->addr);
+            simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "order = %d, addr = 0x%x", pos->order, pos->addr);
             list_del(&(pos->list));
             list_add(&pos->list, &free_areas[pos->order].list);
             reduce(pos->order);
