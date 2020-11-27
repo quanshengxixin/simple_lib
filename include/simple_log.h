@@ -13,6 +13,7 @@ typedef enum {
 	SIMPLE_LOG_TYPE_MAIN,
 	SIMPLE_LOG_TYPE_CONVERSION,
 	SIMPLE_LOG_TYPE_MEMORY,
+	SIMPLE_LOG_TYPE_KERNEL,
 } simple_log_type_t;
 
 typedef enum SIMPLE_LOG_LEVEL {
