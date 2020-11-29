@@ -61,13 +61,35 @@ SIMPLE_MEMORY_MAIN_TARGET := simple_memory_main
 
 
 ##################################################################
+# simple_pcm_main
+##################################################################
+SIMPLE_PCM_MAIN_SRCS = ./test/simple_pcm_main.c \
+						./src/simple_log.c \
+						./src/simple_pcm.c
+
+SIMPLE_PCM_MAIN_INC = \
+					-I ./include
+
+SIMPLE_PCM_MAIN_CFLAGS := -g -Wall -O3
+
+SIMPLE_PCM_MAIN_LDFLAGS :=
+
+SIMPLE_PCM_MAIN_LIBS :=
+
+SIMPLE_PCM_MAIN_OBJS := $(patsubst %.c,%.o,$(SIMPLE_PCM_MAIN_SRCS))
+
+SIMPLE_PCM_MAIN_TARGET := simple_pcm_main
+
+##################################################################
 # build setting
 ##################################################################
-all: $(SIMPLE_LOG_MAIN_TARGET) $(SIMPLE_KERNEL_MAIN_TARGET) $(SIMPLE_MEMORY_MAIN_TARGET)
+all: $(SIMPLE_LOG_MAIN_TARGET) $(SIMPLE_KERNEL_MAIN_TARGET) $(SIMPLE_MEMORY_MAIN_TARGET) \
+	$(SIMPLE_PCM_MAIN_TARGET)
 
 clean:
 	find . -name "*.o" | xargs rm -r
-	rm -rf $(SIMPLE_LOG_MAIN_TARGET) $(SIMPLE_KERNEL_MAIN_TARGET) $(SIMPLE_MEMORY_MAIN_TARGET)
+	rm -rf $(SIMPLE_LOG_MAIN_TARGET) $(SIMPLE_KERNEL_MAIN_TARGET) $(SIMPLE_MEMORY_MAIN_TARGET) \
+		$(SIMPLE_PCM_MAIN_TARGET)
 
 $(SIMPLE_LOG_MAIN_OBJS):%.o:%.c
 	$(CC) $(SIMPLE_LOG_MAIN_CFLAGS) $(SIMPLE_LOG_MAIN_INC) -c $< -o $@
@@ -83,3 +105,8 @@ $(SIMPLE_MEMORY_MAIN_OBJS):%.o:%.c
 	$(CC) $(SIMPLE_MEMORY_MAIN_CFLAGS) $(SIMPLE_MEMORY_MAIN_INC) -c $< -o $@
 $(SIMPLE_MEMORY_MAIN_TARGET):$(SIMPLE_MEMORY_MAIN_OBJS)
 	$(CC) -o $@ $(SIMPLE_MEMORY_MAIN_OBJS) $(SIMPLE_MEMORY_MAIN_LDFLAGS) $(SIMPLE_MEMORY_MAIN_LIBS)
+
+$(SIMPLE_PCM_MAIN_OBJS):%.o:%.c
+	$(CC) $(SIMPLE_PCM_MAIN_CFLAGS) $(SIMPLE_PCM_MAIN_INC) -c $< -o $@
+$(SIMPLE_PCM_MAIN_TARGET):$(SIMPLE_PCM_MAIN_OBJS)
+	$(CC) -o $@ $(SIMPLE_PCM_MAIN_OBJS) $(SIMPLE_PCM_MAIN_LDFLAGS) $(SIMPLE_PCM_MAIN_LIBS)
