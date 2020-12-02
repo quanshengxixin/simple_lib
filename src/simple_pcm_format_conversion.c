@@ -3,13 +3,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <assert.h>
-#include <errno.h>
 
 #include "simple_log.h"
 #include "simple_errno.h"
-#include "pcm_format_conversion.h"
-
-#define PCM_FORMAT_CONVERSION_TEST_MAIN		0
+#include "simple_pcm_format_conversion.h"
 
 #define PERIOD_FRAME_SIZE		640
 
@@ -119,7 +116,6 @@ static int int32_to_int16_process(const void *src, void *dest, int point_num)
 
 int pcm_format_conversion_init(pcm_format_conversion_t **handle, pcm_format_t input, pcm_format_t output)
 {
-	int ret = 0;
 	assert(sizeof(float) == 4);
 
 	pcm_format_conversion_t *tmp_handle = (pcm_format_conversion_t *)calloc(1, sizeof(pcm_format_conversion_t));
@@ -283,98 +279,3 @@ exit0:
 	free(input_src);
 	return ret;
 }
-
-#if PCM_FORMAT_CONVERSION_TEST_MAIN
-
-int pcm_format_conversion_test_main()
-{
-	int ret = SIMPLE_OK;
-	set_loglevel(SIMPLE_LOG_TYPE_CONVERSION, SIMPLE_LOG_DBG);
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_16_origin.raw", "44100_2ch_float_new.raw",
-		PCM_FORMAT_INT_16BIT, PCM_FORMAT_FLOAT_32BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_float_new.raw", "44100_2ch_16_new.raw",
-		PCM_FORMAT_FLOAT_32BIT, PCM_FORMAT_INT_16BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_16_origin.raw", "44100_2ch_32_new.raw",
-		PCM_FORMAT_INT_16BIT, PCM_FORMAT_INT_32BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_32_new.raw", "44100_2ch_16_new.raw",
-		PCM_FORMAT_INT_32BIT, PCM_FORMAT_INT_16BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_32_origin.raw", "44100_2ch_float_new.raw",
-		PCM_FORMAT_INT_32BIT, PCM_FORMAT_FLOAT_32BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_float_new.raw", "44100_2ch_32_new.raw",
-		PCM_FORMAT_FLOAT_32BIT, PCM_FORMAT_INT_32BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_32_origin.raw", "44100_2ch_16_new.raw",
-		PCM_FORMAT_INT_32BIT, PCM_FORMAT_INT_16BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_16_new.raw", "44100_2ch_32_new.raw",
-		PCM_FORMAT_INT_16BIT, PCM_FORMAT_INT_32BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_float_origin.raw", "44100_2ch_16_new.raw",
-		PCM_FORMAT_FLOAT_32BIT, PCM_FORMAT_INT_16BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_16_new.raw", "44100_2ch_float_new.raw",
-		PCM_FORMAT_INT_16BIT, PCM_FORMAT_FLOAT_32BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_float_origin.raw", "44100_2ch_32_new.raw",
-		PCM_FORMAT_FLOAT_32BIT, PCM_FORMAT_INT_32BIT);
-	if (ret)
-		return ret;
-#endif
-
-#if 1
-	ret = file_pcm_format_conversion("44100_2ch_32_new.raw", "44100_2ch_float_new.raw",
-		PCM_FORMAT_INT_32BIT, PCM_FORMAT_FLOAT_32BIT);
-	if (ret)
-		return ret;
-#endif
-	return ret;
-}
-
-#endif // PCM_FORMAT_CONVERSION_TEST_MAIN
