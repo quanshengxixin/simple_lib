@@ -99,7 +99,7 @@ SIMPLE_PCM_FORMAT_CONVERSION_MAIN_LIBS :=
 
 SIMPLE_PCM_FORMAT_CONVERSION_MAIN_OBJS := $(patsubst %.c,%.o,$(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_SRCS))
 
-SIMPLE_PCM_FORMAT_CONVERSION_MAIN_TARGET := simple_pcm_format_conversion__main
+SIMPLE_PCM_FORMAT_CONVERSION_MAIN_TARGET := simple_pcm_format_conversion_main
 
 ##################################################################
 # build setting

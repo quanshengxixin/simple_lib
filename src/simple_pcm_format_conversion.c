@@ -243,14 +243,14 @@ int file_pcm_format_conversion(const char *src_name, const char *dest_name,
 		goto exit1;
 	}
 
-	ret = fopen_s(&input_fid, src_name, "rb");
-	if (ret) {
+	input_fid = fopen(src_name, "rb");
+	if (!input_fid) {
 		simple_log_err(SIMPLE_LOG_TYPE_CONVERSION, "open %s error %d", src_name, ret);
 		goto exit2;
 	}
 
-	ret = fopen_s(&output_fid, dest_name, "wb");
-	if (ret) {
+	output_fid = fopen(dest_name, "wb");
+	if (!output_fid) {
 		simple_log_err(SIMPLE_LOG_TYPE_CONVERSION, "open %s error %d", dest_name, ret);
 		goto exit3;
 	}
