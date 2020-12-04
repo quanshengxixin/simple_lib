@@ -1,16 +1,11 @@
 #ifndef __PCM_FORMAT_CONVERSION_H__
 #define __PCM_FORMAT_CONVERSION_H__
 
+#include "simple_pcm_format.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef enum {
-	PCM_FORMAT_INT_16BIT = 0,
-	PCM_FORMAT_INT_32BIT,
-	PCM_FORMAT_FLOAT_32BIT,
-	PCM_FORMAT_NUM,
-} pcm_format_t;
 
 typedef struct {
 	pcm_format_t input_format;
