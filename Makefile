@@ -86,6 +86,7 @@ SIMPLE_PCM_MAIN_TARGET := simple_pcm_main
 ##################################################################
 SIMPLE_PCM_FORMAT_CONVERSION_MAIN_SRCS = ./test/simple_pcm_format_conversion_main.c \
 						./src/simple_log.c \
+						./src/simple_pcm_format.c \
 						./src/simple_pcm_format_conversion.c
 
 SIMPLE_PCM_FORMAT_CONVERSION_MAIN_INC = \
@@ -101,16 +102,38 @@ SIMPLE_PCM_FORMAT_CONVERSION_MAIN_OBJS := $(patsubst %.c,%.o,$(SIMPLE_PCM_FORMAT
 
 SIMPLE_PCM_FORMAT_CONVERSION_MAIN_TARGET := simple_pcm_format_conversion_main
 
+
+##################################################################
+# simple_pcm_format_make_main
+##################################################################
+SIMPLE_PCM_FORMAT_MAKE_MAIN_SRCS = ./test/simple_pcm_format_make_main.c \
+						./src/simple_log.c \
+						./src/simple_pcm_format.c \
+						./src/simple_pcm_format_make.c
+
+SIMPLE_PCM_FORMAT_MAKE_MAIN_INC = \
+					-I ./include
+
+SIMPLE_PCM_FORMAT_MAKE_MAIN_CFLAGS := -g -Wall -O3
+
+SIMPLE_PCM_FORMAT_MAKE_MAIN_LDFLAGS :=
+
+SIMPLE_PCM_FORMAT_MAKE_MAIN_LIBS :=
+
+SIMPLE_PCM_FORMAT_MAKE_MAIN_OBJS := $(patsubst %.c,%.o,$(SIMPLE_PCM_FORMAT_MAKE_MAIN_SRCS))
+
+SIMPLE_PCM_FORMAT_MAKE_MAIN_TARGET := simple_pcm_format_make_main
+
 ##################################################################
 # build setting
 ##################################################################
 all: $(SIMPLE_LOG_MAIN_TARGET) $(SIMPLE_KERNEL_MAIN_TARGET) $(SIMPLE_MEMORY_MAIN_TARGET) \
-	$(SIMPLE_PCM_MAIN_TARGET) $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_TARGET)
+	$(SIMPLE_PCM_MAIN_TARGET) $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_TARGET) $(SIMPLE_PCM_FORMAT_MAKE_MAIN_TARGET)
 
 clean:
 	find . -name "*.o" | xargs rm -r
 	rm -rf $(SIMPLE_LOG_MAIN_TARGET) $(SIMPLE_KERNEL_MAIN_TARGET) $(SIMPLE_MEMORY_MAIN_TARGET) \
-		$(SIMPLE_PCM_MAIN_TARGET) $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_TARGET)
+		$(SIMPLE_PCM_MAIN_TARGET) $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_TARGET) $(SIMPLE_PCM_FORMAT_MAKE_MAIN_TARGET)
 
 $(SIMPLE_LOG_MAIN_OBJS):%.o:%.c
 	$(CC) $(SIMPLE_LOG_MAIN_CFLAGS) $(SIMPLE_LOG_MAIN_INC) -c $< -o $@
@@ -136,3 +159,8 @@ $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_OBJS):%.o:%.c
 	$(CC) $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_CFLAGS) $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_INC) -c $< -o $@
 $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_TARGET):$(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_OBJS)
 	$(CC) -o $@ $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_OBJS) $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_LDFLAGS) $(SIMPLE_PCM_FORMAT_CONVERSION_MAIN_LIBS)
+
+$(SIMPLE_PCM_FORMAT_MAKE_MAIN_OBJS):%.o:%.c
+	$(CC) $(SIMPLE_PCM_FORMAT_MAKE_MAIN_CFLAGS) $(SIMPLE_PCM_FORMAT_MAKE_MAIN_INC) -c $< -o $@
+$(SIMPLE_PCM_FORMAT_MAKE_MAIN_TARGET):$(SIMPLE_PCM_FORMAT_MAKE_MAIN_OBJS)
+	$(CC) -o $@ $(SIMPLE_PCM_FORMAT_MAKE_MAIN_OBJS) $(SIMPLE_PCM_FORMAT_MAKE_MAIN_LDFLAGS) $(SIMPLE_PCM_FORMAT_MAKE_MAIN_LIBS)

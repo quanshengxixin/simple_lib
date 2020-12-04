@@ -167,33 +167,6 @@ int pcm_format_conversion_uninit(pcm_format_conversion_t *handle)
 	return SIMPLE_OK;
 }
 
-int pcm_format_get_bit_depth(pcm_format_t format, int *bit_depth)
-{
-	if (!bit_depth) {
-		simple_log_err(SIMPLE_LOG_TYPE_CONVERSION, "bit_depth error");
-		return SIMPLE_EPERM;
-	}
-
-	switch (format) {
-	case PCM_FORMAT_FLOAT_32BIT:
-		*bit_depth = 32;
-		break;
-
-	case PCM_FORMAT_INT_16BIT:
-		*bit_depth = 16;
-		break;
-
-	case PCM_FORMAT_INT_32BIT:
-		*bit_depth = 32;
-		break;
-
-	default:
-		simple_log_err(SIMPLE_LOG_TYPE_MAIN, "intput type(%d) error", format);
-		return SIMPLE_EPERM;
-	}
-	return SIMPLE_OK;
-}
-
 int file_pcm_format_conversion(const char *src_name, const char *dest_name,
 	pcm_format_t intput, pcm_format_t output)
 {

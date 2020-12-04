@@ -17,8 +17,6 @@ int pcm_format_conversion_init(pcm_format_conversion_t **handle, pcm_format_t in
 int pcm_format_conversion_process(pcm_format_conversion_t *handle, const void *src, void *dest, int point_num);
 int pcm_format_conversion_uninit(pcm_format_conversion_t *handle);
 
-int pcm_format_get_bit_depth(pcm_format_t format, int *bit_depth);
-
 int file_pcm_format_conversion(const char *src_name, const char *dest_name, pcm_format_t intput, pcm_format_t output);
 
 #ifdef __cplusplus
