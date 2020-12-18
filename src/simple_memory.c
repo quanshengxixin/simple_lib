@@ -37,6 +37,40 @@ static inline int get_order(unsigned int size)
     return order;
 }
 
+static inline int get_order1(unsigned int size)
+{
+    int order = 0;
+
+    while ((1 << order) * page_size < size) {
+        order ++;
+    }
+
+    if ((1 << order) * page_size == size)
+        return order;
+    else
+        return order - 1;
+}
+
+void init_free_area(void *addr, unsigned int size)
+{
+    if (size < page_size) {
+        simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "useless size = 0x%X, page_size = 0x%X", size, page_size);
+        return;
+    }
+    int order = get_order1(size);
+
+    struct free_area *area = (struct free_area *)malloc(sizeof(struct free_area));
+    if (!area) {
+        simple_log_err(SIMPLE_LOG_TYPE_MEMORY, "malloc error");
+        return;
+    }
+    area->addr = addr;
+    area->order = order;
+    list_add(&area->list, &free_areas[order].list);
+
+    return init_free_area(addr + (1 << order) * page_size, size - (1 << order) * page_size);
+}
+
 int simple_memory_init(void *buffer_base, unsigned int buffer_size)
 {
     int order = 0;
@@ -53,12 +87,17 @@ int simple_memory_init(void *buffer_base, unsigned int buffer_size)
     simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "page_size = 0x%X, memory_size = 0x%X, memory_addr = 0x%X",
 	               page_size, total_size, total_addr);
 
+#if 0
     order = get_order(total_size);
     simple_log_dbg(SIMPLE_LOG_TYPE_MEMORY, "total order = %d, 0x%x", order, page_size * (1 << order));
     struct free_area *area = (struct free_area *)malloc(sizeof(struct free_area));
     area->addr = total_addr;
     area->order = order;
     list_add(&area->list, &free_areas[order].list);
+#else
+    init_free_area(total_addr, total_size);
+
+#endif
 
     for (order = 0; order < MAS_ORDER; order++) {
         if (!list_empty(&free_areas[order].list))
