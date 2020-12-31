@@ -1,0 +1,53 @@
+# depslib dependency file v1.0
+1609407781 source:c:\users\mtk16646\desktop\c_test\samplerate\main.c
+	<stdio.h>
+	<stdlib.h>
+	"samplerate.h"
+
+1609404387 c:\users\mtk16646\desktop\c_test\samplerate\samplerate.h
+
+1609408242 source:c:\users\mtk16646\desktop\c_test\samplerate\src_linear.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"config.h"
+	"common.h"
+
+1609408338 c:\users\mtk16646\desktop\c_test\samplerate\config.h
+
+1609404320 c:\users\mtk16646\desktop\c_test\samplerate\common.h
+	<stdint.h>
+	"samplerate.h"
+
+1609408257 source:c:\users\mtk16646\desktop\c_test\samplerate\src_zoh.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"config.h"
+	"common.h"
+
+1609408040 source:c:\users\mtk16646\desktop\c_test\samplerate\samplerate.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"config.h"
+	"samplerate.h"
+	"common.h"
+
+1609408375 source:c:\users\mtk16646\desktop\c_test\samplerate\src_sinc.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdint.h>
+	"config.h"
+	"common.h"
+	"fastest_coeffs.h"
+	"mid_qual_coeffs.h"
+	"high_qual_coeffs.h"
+
+1609407509 c:\users\mtk16646\desktop\c_test\samplerate\fastest_coeffs.h
+
+1609407570 c:\users\mtk16646\desktop\c_test\samplerate\mid_qual_coeffs.h
+
+1609407656 c:\users\mtk16646\desktop\c_test\samplerate\high_qual_coeffs.h
+
