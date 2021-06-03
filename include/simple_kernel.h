@@ -101,4 +101,7 @@
         (type *)((char *)(ptr) - offsetof(type, member))
 #endif
 
+#define uint32_swap_endian(x)   (((x) & 0xFF) << 24 | ((x) & 0xFF00) << 8 | ((x) & 0xFF0000) >> 8 | ((x) & 0xFF000000) >> 24)
+#define uint16_swap_endian(x)   (((x) & 0xFF) << 8 | ((x) & 0xFF00) >> 8)
+
 #endif // __SIMPLE_KERNEL_H__
