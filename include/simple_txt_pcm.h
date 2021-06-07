@@ -7,7 +7,7 @@ typedef enum {
     CHANGE_TYPE_FORMAT_NUM = 2,
 } change_format_type;
 
-int pcm2txt(char *pcm_name, char *txt_name);
-int txt2pcm(char *txt_name, char *pcm_name);
+int pcm2txt(char *pcm_name, char *txt_name, int bitdepth);
+int txt2pcm(char *txt_name, char *pcm_name, int bitdepth);
 
 #endif

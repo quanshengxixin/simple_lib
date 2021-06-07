@@ -14,7 +14,7 @@
 
 #define printf_err  printf
 
-int txt2pcm(char *txt_name, char *pcm_name)
+int txt2pcm(char *txt_name, char *pcm_name, int bitdepth)
 {
     int ret = 0;
     FILE *txt_fid = NULL;
@@ -48,8 +48,16 @@ int txt2pcm(char *txt_name, char *pcm_name)
     printf_dbg("%s has been opened\n", pcm_name);
 
     while (true) {
-        uint32_t tmp;
-        int scanf_num = fscanf(txt_fid, "%x", &tmp);
+        uint32_t tmp32;
+        uint16_t tmp16;
+        int a;
+        float b;
+        int scanf_num = 0;
+        if (bitdepth == 16) {
+            scanf_num = fscanf(txt_fid, "%f,%d,%x", &b, &a, &tmp16);
+        } else if (bitdepth == 32) {
+            scanf_num = fscanf(txt_fid, "%f,%d,%x", &b, &a, &tmp32);
+        }
         if (scanf_num < 1) {
             if (scanf_num == EOF) {
                 printf_dbg("%s EOF\n", txt_name);
@@ -61,7 +69,11 @@ int txt2pcm(char *txt_name, char *pcm_name)
         }
         printf_dbg("0x%08x, scanf_num = %d\n", tmp, scanf_num);
         total_line++;
-        fwrite(&tmp, sizeof(tmp), 1, pcm_fid);
+        if (bitdepth == 16) {
+            fwrite(&tmp16, sizeof(tmp16), 1, pcm_fid);
+        } else if(bitdepth == 32) {
+            fwrite(&tmp32, sizeof(tmp32), 1, pcm_fid);
+        }
     }
 
     printf("total line = %u\n", total_line);
@@ -74,7 +86,7 @@ exit1:
     return ret;
 }
 
-int pcm2txt(char *pcm_name, char *txt_name)
+int pcm2txt(char *pcm_name, char *txt_name, int bitdepth)
 {
     int ret = 0;
     FILE *pcm_fid = NULL;
