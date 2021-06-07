@@ -12,6 +12,23 @@ static const char *charge_format_type_name[CHANGE_TYPE_FORMAT_NUM] = {
     [CHANGE_TYPE_TXT_2_PCM] = {"CHANGE_TYPE_TXT_2_PCM"},
 };
 
+static void txt_pcm_help()
+{
+    printf("-h:\n");
+    printf("\t--help:\t show help info\n");
+
+    printf("-i:\n");
+    printf("\t--input-name:\t input file path\n");
+
+    printf("-o:\n");
+    printf("\t--output-name:\t output file path\n");
+
+    printf("-t:\n");
+    printf("\t--type:\t show change type\n");
+    printf("\t\t0: pcm to txt\n");
+    printf("\t\t1: txt to pcm\n");
+}
+
 int main(int argc, char **argv)
 {
     int ret = 0;
@@ -34,7 +51,8 @@ int main(int argc, char **argv)
     while ((c = getopt_long(argc, argv, short_options, long_options, &option_index)) != -1) {
         switch (c) {
         case 'h':
-            printf("help\n");
+            txt_pcm_help();
+            return ret;
             break;
 
         case 'i':
