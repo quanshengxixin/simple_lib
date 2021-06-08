@@ -50,13 +50,11 @@ int txt2pcm(char *txt_name, char *pcm_name, int bitdepth)
     while (true) {
         uint32_t tmp32;
         uint16_t tmp16;
-        int a;
-        float b;
         int scanf_num = 0;
         if (bitdepth == 16) {
-            scanf_num = fscanf(txt_fid, "%f,%d,%x", &b, &a, &tmp16);
+            scanf_num = fscanf(txt_fid, "%*f,%*d,%x", &tmp16);
         } else if (bitdepth == 32) {
-            scanf_num = fscanf(txt_fid, "%f,%d,%x", &b, &a, &tmp32);
+            scanf_num = fscanf(txt_fid, "%*f,%*d,%x", &tmp32);
         }
         if (scanf_num < 1) {
             if (scanf_num == EOF) {
