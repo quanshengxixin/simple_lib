@@ -14,12 +14,40 @@
 
 #define printf_err  printf
 
+int load_config(char *format, int *line_num)
+{
+    char *file_name = "simple_txt_pcm_main_config.txt";
+    FILE *fid = fopen(file_name, "r");
+    if (!fid) {
+        printf("%s not exited\n", file_name);
+        return -1;
+    }
+    char line[256];
+
+    fgets(line, 256, fid);
+    sscanf(line, "%d", line_num);
+    fgets(line, 256, fid);
+    strcpy(format, line);
+    fclose(fid);
+    return 0;
+}
+
 int txt2pcm(char *txt_name, char *pcm_name, int bitdepth)
 {
     int ret = 0;
     FILE *txt_fid = NULL;
     FILE *pcm_fid = NULL;
     uint32_t total_line = 0;
+    int index;
+
+    char format[256] = { 0 };
+    char line_string[256];
+    int ignor_line = 0;
+
+    if (load_config(format, &ignor_line)) {
+        strcpy(format, "%*f,%*d,%x");
+        ignor_line = 0;
+    }
 
     if (!txt_name) {
         printf_err("txt_name is NULL\n");
@@ -47,14 +75,18 @@ int txt2pcm(char *txt_name, char *pcm_name, int bitdepth)
     }
     printf_dbg("%s has been opened\n", pcm_name);
 
+    for (index = 0; index < ignor_line; index ++) {
+        fgets(line_string, 256, txt_fid);
+    }
+
     while (true) {
         uint32_t tmp32;
         uint16_t tmp16;
         int scanf_num = 0;
         if (bitdepth == 16) {
-            scanf_num = fscanf(txt_fid, "%*f,%*d,%x", &tmp16);
+            scanf_num = fscanf(txt_fid, format, &tmp16);
         } else if (bitdepth == 32) {
-            scanf_num = fscanf(txt_fid, "%*f,%*d,%x", &tmp32);
+            scanf_num = fscanf(txt_fid, format, &tmp32);
         }
         if (scanf_num < 1) {
             if (scanf_num == EOF) {
