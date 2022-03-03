@@ -8,8 +8,8 @@
 #define printf_dbg printf
 
 static const char *charge_format_type_name[CHANGE_TYPE_FORMAT_NUM] = {
-    [CHANGE_TYPE_PCM_2_TXT] = {"CHANGE_TYPE_PCM_2_TXT"},
-    [CHANGE_TYPE_TXT_2_PCM] = {"CHANGE_TYPE_TXT_2_PCM"},
+    [CHANGE_TYPE_PCM_2_TXT] = "CHANGE_TYPE_PCM_2_TXT",
+    [CHANGE_TYPE_TXT_2_PCM] = "CHANGE_TYPE_TXT_2_PCM",
 };
 
 static void txt_pcm_help()
