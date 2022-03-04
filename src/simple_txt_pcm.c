@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "simple_txt_pcm.h"
 
@@ -16,6 +17,8 @@
 
 int load_config(char *format, int *line_num)
 {
+    int ret = 0;
+    char *fgets_ret = NULL;
     char *file_name = "simple_txt_pcm_main_config.txt";
     FILE *fid = fopen(file_name, "r");
     if (!fid) {
@@ -24,12 +27,21 @@ int load_config(char *format, int *line_num)
     }
     char line[256];
 
-    fgets(line, 256, fid);
+    fgets_ret = fgets(line, 256, fid);
+    if (!fgets_ret) {
+        ret = -1;
+        goto exit0;
+    }
     sscanf(line, "%d", line_num);
-    fgets(line, 256, fid);
+    fgets_ret = fgets(line, 256, fid);
+    if (!fgets_ret) {
+        ret = -1;
+        goto exit0;
+    }
     strcpy(format, line);
+exit0:
     fclose(fid);
-    return 0;
+    return ret;
 }
 
 int txt2pcm(char *txt_name, char *pcm_name, int bitdepth)
@@ -48,6 +60,8 @@ int txt2pcm(char *txt_name, char *pcm_name, int bitdepth)
         strcpy(format, "%*f,%*d,%x");
         ignor_line = 0;
     }
+
+    printf("ignor_line = %d, %s\n", ignor_line, format);
 
     if (!txt_name) {
         printf_err("txt_name is NULL\n");
@@ -76,7 +90,9 @@ int txt2pcm(char *txt_name, char *pcm_name, int bitdepth)
     printf_dbg("%s has been opened\n", pcm_name);
 
     for (index = 0; index < ignor_line; index ++) {
-        fgets(line_string, 256, txt_fid);
+        char *fgets_ret = fgets(line_string, 256, txt_fid);
+        if (!fgets_ret)
+            goto exit3;
     }
 
     while (true) {
@@ -107,6 +123,8 @@ int txt2pcm(char *txt_name, char *pcm_name, int bitdepth)
     }
 
     printf("total line = %u\n", total_line);
+
+exit3:
     fclose(pcm_fid);
 
 exit2:
